@@ -20,14 +20,18 @@ Output: false
 package com.codingcompetitions.leetcode;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class LeetCode219 
 {
-	public static void main( String args[] ) throws NumberFormatException
+	public static void main( String args[] ) throws NumberFormatException, IOException
 	{
 		Solution solution = new Solution();
 		
@@ -54,7 +58,7 @@ public class LeetCode219
 
 		solution.containsNearbyDuplicate_version1( numberArray, difference );
 		solution.containsNearbyDuplicate_version2( numberArray, difference );
-		// solution.containsNearbyDuplicate( new int[] { 1,2,3,1,2,3 }, 2 );
+		solution.containsNearbyDuplicate( new int[] { 1,2,3,1,2,3 }, 2 );
 	}
 	
 }
@@ -83,7 +87,7 @@ class Solution
     	return false;
     }
 
-    public boolean containsNearbyDuplicate_version1(int[] nums, int k) 
+	public boolean containsNearbyDuplicate_version1(int[] nums, int k) 
     {
         int arrayLength = nums.length;
         for( int inx = 0; inx < arrayLength-1 ; ++inx )
@@ -98,5 +102,27 @@ class Solution
         }
         return false;
     }
+	
+	// On LeetCode, this was the optimal solution, with O(N) space and time complexities.
+    public boolean containsNearbyDuplicate(int[] numberArray, int difference ) 
+    {
+		Map<Integer, Integer> numberMap = new HashMap<Integer, Integer>();
+		
+		for( int inx = 0; inx < numberArray.length; ++inx )
+		{
+			if( numberMap.containsKey( numberArray[inx] ) )
+			{
+				int previousIndex = numberMap.get( numberArray[inx] );
+				if( inx - previousIndex <= difference )
+				{
+					return true;
+				}
+			}
+			// Map has to be updated either when we are trying to insert a new array entry, or 
+			// if we encounter another instance of the same number and the difference is not atmost 'K'.
+			numberMap.put(numberArray[inx], inx);
+		}
+		return false;
+	}	
 }
 
